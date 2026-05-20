@@ -25,7 +25,21 @@ Console.WriteLine(bob);
 Console.WriteLine(tom);
 Console.WriteLine();
 
+Employee[] employees = new Employee[3]
+{
+    new(){ Name = "Sammy", Age = 28 },
+    new(){ Name = "Bobby", Age = 37 },
+    new(){ Name = "Penny", Age = 20 },
+};
 
+foreach(var e in employees)
+    Console.WriteLine(e);
+Console.WriteLine();
+
+employees.Sort((e1, e2) => e1.Age.CompareTo(e2.Age));
+
+foreach (var e in employees)
+    Console.WriteLine(e);
 
 class Address : ICloneable
 {
@@ -54,9 +68,10 @@ class Company : ICloneable
         => $"Title: {Title}, Address: {Address}";
 }
 
-class Employee : ICloneable
+class Employee : ICloneable, IComparable<Employee>
 {
     public string? Name { get; set; }
+    public int Age { get; set; }
     public Company? Company { get; set; }
 
     public object Clone()
@@ -68,7 +83,10 @@ class Employee : ICloneable
         };
     }
 
+    public int CompareTo(Employee? other)
+        => this.Name.CompareTo(other.Name);
+
     public override string ToString()
-        => $"Name: {Name}, Company: {Company}";
+        => $"Name: {Name}, Age: {Age}, Company: {Company}";
 }
 
