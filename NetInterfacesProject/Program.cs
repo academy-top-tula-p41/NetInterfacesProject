@@ -1,52 +1,74 @@
-﻿
-DoFly(new Duck());
-DoFly(new Planet());
-DoFly(new Airplane());
-
-IFlyable[] flyables = new IFlyable[4];
-flyables[0] = new Duck();
-flyables[1] = new Planet();
-flyables[2] = new Airplane();
-flyables[3] = new Disk();
-
-foreach (var flyable in flyables)
-    flyable.Fly();
-
-void DoFly(IFlyable flable)
+﻿Address address = new() 
+{ 
+    City = "Moscow" 
+};
+Company company = new() 
+{ 
+    Title = "Yandex", 
+    Address = address 
+};
+Employee bob = new()
 {
-    flable.Fly();
+    Name = "Bobby",
+    Company = company,
+};
+
+Console.WriteLine(bob);
+Console.WriteLine();
+
+Employee tom = (Employee)bob.Clone();
+tom.Name = "Tommy";
+tom.Company?.Title = "PiterSoft";
+tom.Company?.Address?.City = "St Petersburg";
+
+Console.WriteLine(bob);
+Console.WriteLine(tom);
+Console.WriteLine();
+
+
+
+class Address : ICloneable
+{
+    public string? City { get; set; }
+
+    public object Clone()
+        => new Address() { City = null };
+
+    public override string ToString()
+        => $"City: {City}";
 }
 
-interface IFlyable
+class Company : ICloneable
 {
-    void Fly() => Console.WriteLine("Any flying");
+    public string? Title { get; set; }
+    public Address? Address { get; set; }
+
+    public object Clone()
+        => new Company()
+        {
+            Title = Title,
+            Address = Address?.Clone() as Address
+        };
+
+    public override string ToString()
+        => $"Title: {Title}, Address: {Address}";
 }
 
-class Airplane : IFlyable
+class Employee : ICloneable
 {
-    public void Fly()
+    public string? Name { get; set; }
+    public Company? Company { get; set; }
+
+    public object Clone()
     {
-        Console.WriteLine("Arplane flying");
+        return new Employee()
+        {
+            Name = Name,
+            Company = Company?.Clone() as Company,
+        };
     }
+
+    public override string ToString()
+        => $"Name: {Name}, Company: {Company}";
 }
 
-class Duck : IFlyable
-{
-    public void Fly()
-    {
-        Console.WriteLine("Duck flying");
-    }
-}
-
-class Planet : IFlyable
-{
-    public void Fly()
-    {
-        Console.WriteLine("Planet flying");
-    }
-}
-
-class Disk : IFlyable
-{
-
-}
